@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     addChild(node) {
-      this.$emit('AddNode', node)
+      this.$emit('addNode', node)
     }
   }
 }

@@ -1,9 +1,8 @@
 <template>
   <ul>
-    <li v-for="node in nodes" :key="node.id" :style="{ marginLeft: `${node.depth * 20}px` }">
+    <li v-for="node in iterativeNodes" :key="node.id" :style="{ marginLeft: `${node.depth * 20}px` }">
       {{ node.name }}
       <button @click="addChild(node)">Add Child</button>
-      <iterative-tree-node :nodes="node.children" v-if="node.children && node.children.length > 0" @addNode="addChild"/>
     </li>
   </ul>
 </template>
@@ -11,18 +10,35 @@
 <script>
 export default {
   name: 'IterativeTreeNode',
-  components: {
-    'iterative-tree-node': () => import('./IterativeTreeNode.vue') // Recursive component
-  },
   props: {
     nodes: {
-      type: Array,
+      type: Object,
       required: true
     },
   },
   methods: {
     addChild(node) {
-      this.$emit('AddNode', node)
+      this.$emit('addNode', node);
+    }
+  },
+  computed: {
+    iterativeNodes() {
+      const result = [];
+      const stack = [{ node: this.nodes, depth: 0 }];
+
+      while (stack.length > 0) {
+        const { node, depth } = stack.pop();
+        result.push({ ...node, depth });
+
+        // Add children to the stack in reverse order to mimic desired rendering order
+        if (node.children && node.children.length > 0) {
+          for (let i = node.children.length - 1; i >= 0; i--) {
+            stack.push({ node: node.children[i], depth: depth + 1 });
+          }
+        }
+      }
+
+      return result
     }
   }
 }

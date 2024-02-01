@@ -7,7 +7,7 @@
 
     <h2>Iterative Tree</h2>
     <ul>
-      <iterative-tree-node :nodes="iterativeNodes" @addNode="addChild"/>
+      <iterative-tree-node :nodes="rootNode" @addNode="addChild"/>
     </ul>
   </div>
 </template>
@@ -35,19 +35,6 @@ export default {
         name: 'Root',
         children: this.categories
       }
-    }
-  },
-  computed: {
-    iterativeNodes() {
-      const queue = [{ node: this.rootNode, depth: 0 }]
-      const result = []
-
-      while (queue.length > 0) {
-        const { node, depth } = queue.shift()
-
-        result.push({ id: node.id, name: node.name, depth, children: node.children })
-      }
-      return result
     }
   },
   methods: {
